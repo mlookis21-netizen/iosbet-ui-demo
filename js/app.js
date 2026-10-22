@@ -294,7 +294,7 @@
       const mine = adminView ? row.sender_type === "admin" : row.sender_type === "customer";
       bubble.className = "support-message " + (mine ? "support-user" : "support-reply");
       const label = document.createElement("span");
-      label.textContent = row.sender_type === "customer" ? (adminView ? "Pelanggan" : "Kamu") : row.sender_type === "ai" ? "IOSBET AI Support" : row.sender_type === "admin" ? "Pemilik IOSBET" : "Informasi sistem";
+      label.textContent = row.sender_type === "customer" ? (adminView ? "Pelanggan" : "Kamu") : row.sender_type === "ai" ? "IOSBET FAQ Support" : row.sender_type === "admin" ? "Pemilik IOSBET" : "Informasi sistem";
       const body = document.createElement("p"); body.textContent = row.body || "";
       const time = document.createElement("time");
       const date = new Date(row.created_at || Date.now());
@@ -368,14 +368,14 @@
     const message=(supportInput?.value||"").trim();if(!message)return;
     if(!supportSession?.user){if(supportFormNote)supportFormNote.textContent="Masuk dahulu untuk mengirim pesan.";openAuth("login");return;}
     sendingSupport=true;const submit=supportForm.querySelector('button[type="submit"]');if(submit){submit.disabled=true;submit.textContent="Mengirim...";}
-    if(supportFormNote)supportFormNote.textContent="Menyimpan pesan dan meminta jawaban AI...";
+    if(supportFormNote)supportFormNote.textContent="Menyimpan pesan dan mencari jawaban FAQ...";
     try{
       const {data,error}=await supabaseClient.functions.invoke("support-chat",{body:{conversation_id:conversationId,topic:supportTopic?.value||"Pertanyaan umum",message}});
       if(error)throw error;if(data?.error)throw new Error(data.error);
       conversationId=data.conversation_id||conversationId;supportInput.value="";if(supportCharCount)supportCharCount.textContent="0";
       await loadCustomerMessages();
       if(!customerChannel&&conversationId)customerChannel=supabaseClient.channel("support-customer-"+conversationId).on("postgres_changes",{event:"INSERT",schema:"public",table:"support_messages",filter:"conversation_id=eq."+conversationId},loadCustomerMessages).subscribe();
-      if(supportFormNote)supportFormNote.textContent=data.ai_replied?"Pesan tersimpan dan AI sudah membalas.":"Pesan tersimpan; AI belum membalas. Pemilik dapat menindaklanjuti.";
+      if(supportFormNote)supportFormNote.textContent=data.ai_replied?"Pesan tersimpan dan FAQ otomatis sudah membalas.":"Pesan tersimpan; AI belum membalas. Pemilik dapat menindaklanjuti.";
     }catch(err){if(supportFormNote)supportFormNote.textContent=err?.message||"Pesan gagal dikirim. Coba lagi.";}
     finally{sendingSupport=false;if(submit){submit.disabled=false;submit.innerHTML='Kirim pesan <span>↗</span>';}}
   });
