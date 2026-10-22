@@ -54,7 +54,7 @@
         dialogTitle.textContent = title;
         dialog.showModal();
       } else {
-        notify(title + " — kartu pratinjau demo, tidak ada permainan yang terhubung.");
+        notify(title + " — kartu pratinjau, tidak ada permainan yang terhubung.");
       }
     });
   });
