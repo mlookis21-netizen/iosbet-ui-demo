@@ -268,7 +268,7 @@
     });
   });
 
-  const sectionIds = ["home", "slots", "casino", "poker", "lotto", "arcade", "fishing", "sports", "exclusive", "promotions", "leaderboard", "contact"];
+  const sectionIds = ["home", "slots", "casino", "poker", "lotto", "arcade", "fishing", "sports", "exclusive", "wallet", "deposit", "withdraw", "promotions", "leaderboard", "contact"];
   const navLinks = [...document.querySelectorAll(".side-nav a, .mobile-nav a")];
   const sectionObserver = "IntersectionObserver" in window ? new IntersectionObserver((entries) => {
     const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
