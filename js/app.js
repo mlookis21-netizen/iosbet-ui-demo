@@ -268,7 +268,58 @@
     });
   });
 
-  const sectionIds = ["home", "slots", "casino", "poker", "lotto", "arcade", "fishing", "sports", "exclusive", "wallet", "deposit", "withdraw", "promotions", "leaderboard", "contact"];
+  // Live chat preview: messages stay in this page and are not delivered to staff.
+  const supportForm = document.querySelector("#support-form");
+  const supportInput = document.querySelector("#support-message-input");
+  const supportMessages = document.querySelector("#support-messages");
+  const supportTopic = document.querySelector("#support-topic");
+  const supportCharCount = document.querySelector("#support-char-count");
+  const supportFormNote = document.querySelector("#support-form-note");
+
+  supportInput?.addEventListener("input", () => {
+    if (supportCharCount) supportCharCount.textContent = String(supportInput.value.length);
+  });
+
+  supportForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const message = (supportInput?.value || "").trim();
+    const topic = supportTopic?.value || "Pertanyaan umum";
+    if (!message) {
+      if (supportFormNote) supportFormNote.textContent = "Tulis pesan terlebih dahulu.";
+      supportInput?.focus();
+      return;
+    }
+    if (!supportMessages) return;
+
+    const bubble = document.createElement("div");
+    bubble.className = "support-message support-user";
+    const label = document.createElement("span");
+    label.textContent = "Kamu · " + topic;
+    const body = document.createElement("p");
+    body.textContent = message;
+    const time = document.createElement("time");
+    time.textContent = "Ditampilkan di pratinjau";
+    bubble.append(label, body, time);
+    supportMessages.appendChild(bubble);
+
+    const note = document.createElement("div");
+    note.className = "support-message support-reply";
+    const noteLabel = document.createElement("span");
+    noteLabel.textContent = "Informasi sistem";
+    const noteBody = document.createElement("p");
+    noteBody.textContent = "Pesanmu terlihat pada pratinjau ini saja dan belum terkirim ke petugas. Integrasi backend live chat perlu diaktifkan agar tim dukungan dapat menerima dan membalas pesan.";
+    const noteTime = document.createElement("time");
+    noteTime.textContent = "Belum terkirim";
+    note.append(noteLabel, noteBody, noteTime);
+    supportMessages.appendChild(note);
+
+    supportInput.value = "";
+    if (supportCharCount) supportCharCount.textContent = "0";
+    if (supportFormNote) supportFormNote.textContent = "Pesan hanya tampil di halaman ini; belum dikirim ke admin.";
+    supportMessages.scrollTop = supportMessages.scrollHeight;
+  });
+
+  const sectionIds = ["home", "slots", "casino", "poker", "lotto", "arcade", "fishing", "sports", "exclusive", "wallet", "deposit", "withdraw", "live-chat", "promotions", "leaderboard", "contact"];
   const navLinks = [...document.querySelectorAll(".side-nav a, .mobile-nav a")];
   const sectionObserver = "IntersectionObserver" in window ? new IntersectionObserver((entries) => {
     const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
