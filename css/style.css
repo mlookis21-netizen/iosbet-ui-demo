@@ -101,3 +101,27 @@
 .support-form-note{margin:3px 0 0;color:#9ba8bb;font-size:9px;line-height:1.7}
 @media(max-width:900px){.support-layout{grid-template-columns:1fr}.support-info{padding:21px}.support-topic-list{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:16px}.support-chat{min-height:460px}}
 @media(max-width:760px){.support-open-label{display:none}.support-info h3{font-size:21px}.support-topic-list{grid-template-columns:1fr 1fr}.support-chat-top{padding:13px}.support-messages{padding:14px}.support-form{padding:14px}.support-form-foot{align-items:flex-end}.support-form-foot .btn{padding:10px 12px;font-size:10px}}
+
+/* Real Supabase support inbox */
+.support-admin{margin-top:22px;padding:20px;border:1px solid var(--line);border-radius:16px;background:#101725}
+.support-admin[hidden]{display:none!important}
+.support-admin-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.support-admin-heading h3{margin:5px 0;font:700 22px "Space Grotesk",sans-serif}
+.support-admin-heading p{margin:0;color:var(--muted);font-size:12px}
+.support-admin-grid{display:grid;grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr);gap:14px}
+.support-ticket-list,.support-admin-thread{min-width:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0d1420}
+.support-ticket-list{max-height:520px;overflow:auto}
+.support-ticket{display:grid;width:100%;gap:5px;padding:13px 14px;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text)}
+.support-ticket.active,.support-ticket:hover{background:#78a8ff12}
+.support-ticket strong{font-size:12px}
+.support-ticket small,.support-ticket time{font-size:10px;color:var(--muted)}
+.support-admin-empty{padding:14px;color:var(--muted);font-size:12px}
+.support-admin-thread-head{padding:13px 15px;border-bottom:1px solid var(--line);font-size:12px;font-weight:700;color:#dce3ee}
+.support-admin-messages{min-height:180px;max-height:360px;overflow:auto;padding:14px}
+.support-admin-reply{padding:14px;border-top:1px solid var(--line);display:grid;gap:8px}
+.support-admin-reply label{font-size:11px;color:#dce3ee;font-weight:700}
+.support-admin-reply textarea{width:100%;resize:vertical;min-height:75px;padding:11px;border:1px solid var(--line);border-radius:10px;background:#0a101a;color:var(--text);outline:none}
+.support-admin-reply textarea:focus{border-color:#78a8ff88}
+.support-admin-reply .support-form-foot{gap:10px;flex-wrap:wrap}
+.support-admin-reply .support-form-foot small{max-width:55%;line-height:1.5}
+@media(max-width:800px){.support-admin{padding:14px}.support-admin-grid{grid-template-columns:1fr}.support-ticket-list{max-height:220px}.support-admin-heading{align-items:flex-start}.support-admin-heading .btn{flex-shrink:0}.support-admin-reply .support-form-foot small{max-width:100%}}
