@@ -75,14 +75,23 @@ Deno.serve(async (req: Request) => {
     conversationId = created.id;
   }
 
-  const { count, error: countError } = await admin
-    .from("support_messages")
-    .select("id", { count: "exact", head: true })
-    .eq("conversation_id", conversationId)
-    .eq("sender_type", "customer")
-    .gte("created_at", new Date(Date.now() - 10 * 60 * 1000).toISOString());
-  if (countError) return json({ error: "Gagal memeriksa batas pesan." }, 500);
-  if ((count ?? 0) >= 10) return json({ error: "Batas sementara tercapai: maksimal 10 pesan per percakapan dalam 10 menit. Coba lagi nanti." }, 429);
+  const recentSince = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+  const { data: userConversations, error: conversationsError } = await admin
+    .from("support_conversations")
+    .select("id")
+    .eq("user_id", user.id);
+  if (conversationsError) return json({ error: "Gagal memeriksa batas pesan." }, 500);
+  const conversationIds = (userConversations || []).map((row) => row.id);
+  if (conversationIds.length) {
+    const { count, error: countError } = await admin
+      .from("support_messages")
+      .select("id", { count: "exact", head: true })
+      .in("conversation_id", conversationIds)
+      .eq("sender_type", "customer")
+      .gte("created_at", recentSince);
+    if (countError) return json({ error: "Gagal memeriksa batas pesan." }, 500);
+    if ((count ?? 0) >= 10) return json({ error: "Batas sementara tercapai: maksimal 10 pesan per akun dalam 10 menit. Coba lagi nanti." }, 429);
+  }
 
   const { error: insertError } = await admin.from("support_messages").insert({
     conversation_id: conversationId,
