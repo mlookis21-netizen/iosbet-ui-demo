@@ -8,16 +8,14 @@
 - The GitHub Pages UI sends customer messages to the Edge Function and includes an owner inbox.
 - AI secret is intentionally **not** stored in this repository.
 
-## 1. Enable AI replies
+## 1. FAQ otomatis tanpa API berbayar
 
-1. Create an API key in the OpenAI API platform. API billing is separate from ChatGPT subscriptions.
-2. Open the Supabase Dashboard for project `iosbet-ui-demo`.
-3. Go to **Edge Functions → Secrets**.
-4. Add `OPENAI_API_KEY` with the private API key as its value. Never paste this key into `index.html`, `js/app.js`, GitHub, or a public message.
-5. Optionally add `OPENAI_MODEL` with value `gpt-6-luna`. If omitted, the function uses that default.
-6. Save the secret. Edge Functions read the secret server-side; no redeploy is needed just to change a secret.
+- Edge Function `support-chat` menggunakan FAQ berbasis kata kunci yang dijalankan di Supabase.
+- Tidak memerlukan `OPENAI_API_KEY`, tidak mengirim pesan ke penyedia AI eksternal, dan tidak menimbulkan biaya token API.
+- FAQ mencakup pendaftaran, login, pemulihan kata sandi, email verifikasi, katalog, gangguan umum, keamanan, permintaan pemilik, dan pertanyaan tentang deposit/penarikan.
+- Jika pertanyaan tidak cocok, FAQ menjelaskan bahwa pemilik dapat menindaklanjuti melalui panel.
 
-If the key is not configured, customer messages are still saved but the function will not generate AI answers. The owner can still answer manually.
+Untuk memperbarui jawaban FAQ, edit fungsi `faqCategory` dan cabang jawaban di `supabase/functions/support-chat/index.ts`, lalu deploy ulang Edge Function `support-chat`.
 
 ## 2. Give your own account owner access
 
@@ -49,7 +47,7 @@ Confirm that the returned row is your own account before proceeding. Never grant
 
 1. Open the GitHub Pages site and sign in with a test customer account.
 2. Go to **Live Chat**, send a non-sensitive test question, and confirm the message appears after the page reloads.
-3. Confirm an AI response appears after `OPENAI_API_KEY` is configured.
+3. Confirm a matching FAQ response appears automatically.
 4. Sign in with the owner account in a separate browser/profile. Open **Live Chat → Panel bantuan**, select the conversation, and send a manual reply.
 5. Confirm the customer sees the owner's reply without reloading.
 6. Test with two customer accounts and verify one cannot see the other's conversation.
@@ -58,7 +56,7 @@ Confirm that the returned row is your own account before proceeding. Never grant
 
 - RLS restricts customers to their own conversations; owner access uses trusted `app_metadata`.
 - The OpenAI key and Supabase secret/service-role key must stay server-side.
-- The Edge Function currently limits a user to 10 customer messages per 10 minutes across their conversations. This helps reduce accidental API spend but is not a full abuse-prevention service.
+- The Edge Function currently limits a user to 10 customer messages per 10 minutes across their conversations. This is a basic abuse safeguard, not a complete anti-spam system.
 - Do not request passwords, OTPs, PINs, or payment details in support messages.
-- AI answers can be wrong. It must not claim to have inspected accounts or completed actions it cannot perform. The owner should handle sensitive account-specific cases.
-- GitHub Pages is static hosting; the database and AI logic run in Supabase.
+- FAQ answers are fixed templates and can be incomplete or fail to match a question. It must not claim to have inspected accounts or completed actions it cannot perform. The owner should handle sensitive account-specific cases.
+- GitHub Pages is static hosting; the database and FAQ logic run in Supabase.
