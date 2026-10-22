@@ -204,10 +204,10 @@
             <div class="support-chat-top">
               <div class="support-agent-avatar">i</div>
               <div><strong>IOSBET Support</strong><small><span class="support-status-dot"></span> Formulir bantuan</small></div>
-              <span class="support-preview-tag">PREVIEW</span>
+              <span class="support-preview-tag">AI + REALTIME</span>
             </div>
             <div class="support-messages" id="support-messages" aria-live="polite">
-              <div class="support-message support-reply"><span>IOSBET Support</span><p>Halo! Silakan ceritakan pertanyaan atau kendala yang kamu alami. Tim dukungan belum terhubung pada prototipe ini, jadi pesan tidak akan terkirim ke petugas.</p><time>Pesan informasi</time></div>
+              <div class="support-message support-reply"><span>IOSBET Support</span><p>Halo! Aku asisten bantuan IOSBET. Ceritakan pertanyaanmu. Jika perlu pemeriksaan pemilik, percakapan ini akan tersimpan agar dapat ditindaklanjuti.</p><time>Pesan informasi</time></div>
             </div>
             <form class="support-form" id="support-form">
               <label for="support-topic">Topik bantuan</label>
@@ -221,10 +221,21 @@
               <label for="support-message-input">Pesan kamu</label>
               <textarea id="support-message-input" name="message" rows="3" maxlength="1200" placeholder="Tulis pertanyaan, keluhan, atau bantuan yang dibutuhkan..." required></textarea>
               <div class="support-form-foot"><small><span id="support-char-count">0</span>/1200 karakter</small><button class="btn btn-gold" type="submit">Kirim pesan <span>↗</span></button></div>
-              <p class="support-form-note" id="support-form-note" role="status">Mode pratinjau: pesan hanya tampil di halaman ini dan tidak dikirim ke admin.</p>
+              <p class="support-form-note" id="support-form-note" role="status">Masuk ke akun terlebih dahulu agar pesan tersimpan. Jangan kirim kata sandi, OTP, PIN, atau data pembayaran.</p>
             </form>
           </div>
         </div>
+
+        <section class="support-admin" id="support-admin" hidden>
+          <div class="support-admin-heading"><div><span class="section-kicker">KHUSUS PEMILIK</span><h3>Panel bantuan</h3><p>Percakapan pelanggan yang masuk akan tampil di sini secara realtime.</p></div><button class="btn btn-outline" type="button" id="support-admin-refresh">Muat ulang</button></div>
+          <div class="support-admin-grid">
+            <div class="support-ticket-list" id="support-ticket-list"><p class="support-admin-empty">Memuat percakapan...</p></div>
+            <div class="support-admin-thread"><div class="support-admin-thread-head" id="support-admin-thread-head">Pilih percakapan untuk membaca pesan.</div>
+              <div class="support-admin-messages support-messages" id="support-admin-messages" aria-live="polite"></div>
+              <form class="support-admin-reply" id="support-admin-reply-form"><label for="support-admin-reply-input">Balasan pemilik</label><textarea id="support-admin-reply-input" rows="3" maxlength="4000" placeholder="Tulis balasan..." required></textarea><div class="support-form-foot"><small>Balasan akan dikirim ke percakapan yang dipilih.</small><button class="btn btn-gold" type="submit" id="support-admin-reply-submit">Kirim balasan</button></div><p class="support-form-note" id="support-admin-note" role="status">Panel hanya tersedia untuk akun dengan klaim admin.</p></form>
+            </div>
+          </div>
+        </section>
       </section>
 
       <section class="content-section" id="promotions">
