@@ -37,3 +37,23 @@
 .game-art .game-tag{z-index:2;position:absolute;top:10px;left:10px;box-shadow:0 4px 14px #0005}
 .game-art:after{content:"";position:absolute;inset:45% 0 0;pointer-events:none;background:linear-gradient(transparent,#080b12aa)}
 @media(max-width:760px){.game-art .game-tag{top:7px;left:7px}}
+
+
+/* Wallet menu — interface preview only */
+.wallet-section{scroll-margin-top:105px}
+.wallet-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.wallet-card{position:relative;overflow:hidden;padding:24px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#151f30,#0e1522);scroll-margin-top:105px}
+.wallet-card:before{content:"";position:absolute;top:-75px;right:-55px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,#e9bd681b,transparent 68%);pointer-events:none}
+.wallet-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;font-size:25px;margin-bottom:18px}
+.deposit-icon{background:#e9bd681b;color:var(--gold)}
+.withdraw-icon{background:#78a8ff1c;color:var(--blue)}
+.wallet-kicker{font-size:9px;font-weight:800;letter-spacing:.16em;color:var(--gold)}
+.wallet-card h3{font-family:"Space Grotesk",sans-serif;font-size:25px;letter-spacing:-.04em;margin:6px 0 8px}
+.wallet-card>p{max-width:430px;min-height:58px;color:var(--muted);font-size:12px;line-height:1.8;margin:0 0 18px}
+.wallet-details{display:flex;flex-direction:column;gap:4px;padding:12px 0;border-top:1px solid var(--line)}
+.wallet-details span{font-size:10px;color:var(--muted)}
+.wallet-details strong{font-size:12px;color:#e9edf5}
+.wallet-details .wallet-status{color:var(--gold);font-size:11px}
+.wallet-action{width:100%;margin-top:17px;min-height:42px}
+.wallet-disclaimer{font-size:10px;line-height:1.7;color:#8390a5;margin:12px 0 0}
+@media(max-width:760px){.wallet-grid{grid-template-columns:1fr;gap:11px}.wallet-card{padding:20px}.wallet-card>p{min-height:0}.wallet-card h3{font-size:23px}}
