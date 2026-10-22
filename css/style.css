@@ -22,3 +22,9 @@
 .auth-submit:disabled{opacity:.65;cursor:wait;transform:none}
 .auth-legal{font-size:9px;line-height:1.7;color:#77859a;margin:16px 0 0}
 @media(max-width:760px){.auth-user{max-width:105px;font-size:9px}.auth-dialog{padding:23px}}
+
+.auth-session-panel{display:grid;gap:10px;margin:14px 0 4px;padding:15px;border:1px solid #d9b15b44;border-radius:11px;background:#e9bd680d}
+.auth-session-panel[hidden]{display:none}
+.auth-session-panel strong{font-size:12px;overflow-wrap:anywhere;color:#e9edf5}
+.auth-session-panel .btn{width:100%}
+@media(max-width:760px){.mobile-nav{grid-template-columns:repeat(6,minmax(0,1fr))}.mobile-nav a,.mobile-nav button{font-size:8px}}
