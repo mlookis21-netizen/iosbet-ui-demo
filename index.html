@@ -46,6 +46,11 @@
         <a class="nav-link" href="#fishing"><span>〰</span> Fishing</a>
         <a class="nav-link" href="#sports"><span>⚽</span> Sports+</a>
       </nav>
+      <div class="side-label side-label-spaced">AKUN & DOMPET</div>
+      <nav class="side-nav" aria-label="Menu dompet">
+        <a class="nav-link" href="#deposit"><span>↓</span> Deposit</a>
+        <a class="nav-link" href="#withdraw"><span>↑</span> Withdraw (WD)</a>
+      </nav>
       <div class="side-label side-label-spaced">JELAJAHI</div>
       <nav class="side-nav" aria-label="Navigasi lainnya">
         <a class="nav-link" href="#exclusive"><span>✧</span> Eksklusif</a>
@@ -144,6 +149,33 @@
           <a id="sports" href="#sports"><span>⚽</span><strong>Sports+</strong><small>Sports hub</small><b>↗</b></a>
           <a id="leaderboard" href="#leaderboard"><span>☷</span><strong>Leaderboard</strong><small>Sorotan komunitas</small><b>↗</b></a>
         </div>
+      </section>
+
+      <section class="content-section wallet-section" id="wallet">
+        <div class="section-heading">
+          <div><span class="section-kicker">AKUN & DOMPET</span><h2>Deposit & Withdraw</h2><p>Pratinjau alur dompet. Belum ada transaksi atau pembayaran nyata.</p></div>
+        </div>
+        <div class="wallet-grid">
+          <article class="wallet-card" id="deposit">
+            <div class="wallet-icon deposit-icon">↓</div>
+            <span class="wallet-kicker">TAMBAH SALDO</span>
+            <h3>Deposit</h3>
+            <p>Pilih nominal dan metode pada alur simulasi untuk melihat bagaimana halaman deposit akan ditampilkan.</p>
+            <div class="wallet-details"><span>Metode pembayaran</span><strong>Transfer bank · E-wallet · QRIS</strong></div>
+            <div class="wallet-details"><span>Status layanan</span><strong class="wallet-status">Pratinjau UI saja</strong></div>
+            <button class="btn btn-gold wallet-action" type="button" data-notice="Deposit belum aktif. Ini hanya pratinjau antarmuka; tidak ada pembayaran atau saldo yang diproses.">Lihat alur deposit <span>↗</span></button>
+          </article>
+          <article class="wallet-card" id="withdraw">
+            <div class="wallet-icon withdraw-icon">↑</div>
+            <span class="wallet-kicker">PENARIKAN</span>
+            <h3>Withdraw (WD)</h3>
+            <p>Area penarikan dirancang untuk menampilkan ringkasan permintaan sebelum dikirim saat layanan benar-benar tersedia.</p>
+            <div class="wallet-details"><span>Tujuan penarikan</span><strong>Bank · E-wallet</strong></div>
+            <div class="wallet-details"><span>Status layanan</span><strong class="wallet-status">Pratinjau UI saja</strong></div>
+            <button class="btn btn-outline wallet-action" type="button" data-notice="Withdraw belum aktif. Jangan masukkan data rekening; tidak ada penarikan nyata yang diproses.">Lihat alur WD <span>↗</span></button>
+          </article>
+        </div>
+        <p class="wallet-disclaimer">Untuk prototipe desain saja. Jangan masukkan nomor rekening, PIN, OTP, atau informasi pembayaran.</p>
       </section>
 
       <section class="content-section" id="promotions">
