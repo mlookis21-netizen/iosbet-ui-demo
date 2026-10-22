@@ -1,4 +1,4 @@
-# IOSBET UI Demo
+# IOSBET
 
 Prototipe front-end statis dengan tema gelap dan aksen emas, terinspirasi secara umum dari pola navigasi situs katalog hiburan. Proyek ini terpisah dari repository Info & Komunikasi.
 
@@ -6,17 +6,17 @@ Prototipe front-end statis dengan tema gelap dan aksen emas, terinspirasi secara
 
 - `index.html` — struktur halaman dan komponen UI.
 - `css/style.css` — gaya responsif untuk desktop, tablet, dan ponsel.
-- `js/app.js` — pencarian, filter katalog, dialog detail demo, toast notifikasi, dan navigasi mobile.
+- `js/app.js` — pencarian, filter katalog, dialog detail pratinjau, toast notifikasi, dan navigasi mobile.
 
 ## Menjalankan
 
 Buka `index.html` di browser. Tidak membutuhkan build tools, server, database, akun, atau API key. Google Fonts memerlukan koneksi internet; jika tidak tersedia, browser menggunakan font sans-serif cadangan.
 
-## Batasan demo
+## Batasan prototipe
 
-- Tidak ada backend, login sungguhan, atau penyimpanan data.
+- Autentikasi akun tersedia melalui Supabase; katalog tetap berupa pratinjau statis.
 - Tidak ada permainan interaktif, taruhan, saldo, deposit, penarikan, pembayaran, atau integrasi penyedia game.
-- Tombol akun dan aksi terkait hanya menampilkan notifikasi demo.
+- Tombol akun memakai Supabase Auth; kartu katalog hanya menampilkan pratinjau antarmuka.
 - Nama game dan materi promosi digunakan sebagai contoh kartu katalog/UI; tidak menyatakan adanya layanan, hadiah, atau penawaran nyata.
 
 ## Deployment GitHub Pages
