@@ -268,56 +268,132 @@
     });
   });
 
-  // Live chat preview: messages stay in this page and are not delivered to staff.
+
+  // Live chat terhubung ke Supabase; AI dipanggil melalui Edge Function server-side.
   const supportForm = document.querySelector("#support-form");
   const supportInput = document.querySelector("#support-message-input");
   const supportMessages = document.querySelector("#support-messages");
   const supportTopic = document.querySelector("#support-topic");
   const supportCharCount = document.querySelector("#support-char-count");
   const supportFormNote = document.querySelector("#support-form-note");
+  const supportAdmin = document.querySelector("#support-admin");
+  const ticketList = document.querySelector("#support-ticket-list");
+  const adminMessages = document.querySelector("#support-admin-messages");
+  const adminHead = document.querySelector("#support-admin-thread-head");
+  const adminReplyForm = document.querySelector("#support-admin-reply-form");
+  const adminReplyInput = document.querySelector("#support-admin-reply-input");
+  const adminNote = document.querySelector("#support-admin-note");
+  let supportSession = null, conversationId = null, adminConversationId = null;
+  let customerChannel = null, adminChannel = null, sendingSupport = false;
 
-  supportInput?.addEventListener("input", () => {
-    if (supportCharCount) supportCharCount.textContent = String(supportInput.value.length);
-  });
-
-  supportForm?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const message = (supportInput?.value || "").trim();
-    const topic = supportTopic?.value || "Pertanyaan umum";
-    if (!message) {
-      if (supportFormNote) supportFormNote.textContent = "Tulis pesan terlebih dahulu.";
-      supportInput?.focus();
-      return;
+  function renderMessages(container, rows, adminView = false) {
+    if (!container) return;
+    container.replaceChildren();
+    (rows || []).forEach((row) => {
+      const bubble = document.createElement("div");
+      const mine = adminView ? row.sender_type === "admin" : row.sender_type === "customer";
+      bubble.className = "support-message " + (mine ? "support-user" : "support-reply");
+      const label = document.createElement("span");
+      label.textContent = row.sender_type === "customer" ? (adminView ? "Pelanggan" : "Kamu") : row.sender_type === "ai" ? "IOSBET AI Support" : row.sender_type === "admin" ? "Pemilik IOSBET" : "Informasi sistem";
+      const body = document.createElement("p"); body.textContent = row.body || "";
+      const time = document.createElement("time");
+      const date = new Date(row.created_at || Date.now());
+      time.textContent = Number.isNaN(date.getTime()) ? "" : date.toLocaleString("id-ID", {dateStyle:"short",timeStyle:"short"});
+      bubble.append(label, body, time); container.appendChild(bubble);
+    });
+    container.scrollTop = container.scrollHeight;
+  }
+  function renderWelcome(text) {
+    renderMessages(supportMessages, [{sender_type:"ai",body:text,created_at:new Date().toISOString()}]);
+  }
+  async function loadCustomerMessages() {
+    if (!conversationId || !supportSession?.user || !supabaseClient) return;
+    const {data,error}=await supabaseClient.from("support_messages").select("id,sender_type,body,created_at").eq("conversation_id",conversationId).order("created_at",{ascending:true}).limit(100);
+    if(error){if(supportFormNote)supportFormNote.textContent="Pesan gagal dimuat. Periksa SQL setup dan RLS.";return;}
+    if(data?.length) renderMessages(supportMessages,data);
+    else renderWelcome("Halo! Kirim pertanyaan pertamamu untuk memulai percakapan.");
+  }
+  async function loadTickets() {
+    if(!supportSession?.user || supportSession.user.app_metadata?.support_admin!==true)return;
+    const {data,error}=await supabaseClient.from("support_conversations").select("id,user_id,topic,status,updated_at").order("updated_at",{ascending:false}).limit(100);
+    if(error){if(ticketList)ticketList.textContent="Gagal memuat tiket. Periksa klaim admin dan RLS.";return;}
+    ticketList.replaceChildren();
+    if(!data?.length){ticketList.textContent="Belum ada percakapan.";return;}
+    data.forEach(t=>{
+      const b=document.createElement("button");b.type="button";b.className="support-ticket"+(t.id===adminConversationId?" active":"");
+      const title=document.createElement("strong");title.textContent=t.topic||"Pertanyaan umum";
+      const meta=document.createElement("small");meta.textContent=t.user_id.slice(0,8)+"… · "+t.status;
+      const time=document.createElement("time");time.textContent=new Date(t.updated_at).toLocaleString("id-ID",{dateStyle:"short",timeStyle:"short"});
+      b.append(title,meta,time);b.addEventListener("click",()=>selectTicket(t));ticketList.appendChild(b);
+    });
+  }
+  async function loadAdminMessages(){
+    if(!adminConversationId)return;
+    const {data:ticket}=await supabaseClient.from("support_conversations").select("topic,user_id,status").eq("id",adminConversationId).maybeSingle();
+    if(ticket&&adminHead)adminHead.textContent=ticket.topic+" · pengguna "+ticket.user_id.slice(0,8)+"… · "+ticket.status;
+    const {data,error}=await supabaseClient.from("support_messages").select("id,sender_type,body,created_at").eq("conversation_id",adminConversationId).order("created_at",{ascending:true}).limit(200);
+    if(error){if(adminNote)adminNote.textContent="Tidak dapat membaca pesan; periksa RLS admin.";return;}
+    renderMessages(adminMessages,data,true);
+  }
+  async function selectTicket(t){adminConversationId=t.id;await loadTickets();await loadAdminMessages();}
+  async function initializeSupport(session){
+    supportSession=session||null;conversationId=null;
+    if(customerChannel){supabaseClient.removeChannel(customerChannel);customerChannel=null;}
+    if(!session?.user){renderWelcome("Silakan masuk ke akun untuk memulai percakapan yang tersimpan.");if(supportFormNote)supportFormNote.textContent="Masuk terlebih dahulu agar pesan tersimpan.";if(supportAdmin)supportAdmin.hidden=true;}
+    else{
+      const {data,error}=await supabaseClient.from("support_conversations").select("id,status").eq("user_id",session.user.id).in("status",["open","waiting"]).order("updated_at",{ascending:false}).limit(1);
+      if(error){if(supportFormNote)supportFormNote.textContent="Backend belum siap. Pastikan SQL setup dijalankan dan tabel diizinkan Data API.";renderWelcome("Layanan chat belum siap dikonfigurasi.");}
+      else{
+        conversationId=data?.[0]?.id||null;
+        if(conversationId){
+          await loadCustomerMessages();
+          customerChannel=supabaseClient.channel("support-customer-"+conversationId).on("postgres_changes",{event:"INSERT",schema:"public",table:"support_messages",filter:"conversation_id=eq."+conversationId},loadCustomerMessages).subscribe();
+          if(supportFormNote)supportFormNote.textContent="Percakapan tersimpan. Balasan AI dan pemilik tampil realtime.";
+        }else{renderWelcome("Halo! Kirim pertanyaan pertamamu untuk memulai percakapan.");if(supportFormNote)supportFormNote.textContent="Pesan pertama akan membuat percakapan baru.";}
+      }
+      const isAdmin=session.user.app_metadata?.support_admin===true;
+      if(supportAdmin)supportAdmin.hidden=!isAdmin;
+      if(isAdmin){
+        await loadTickets();
+        if(adminChannel)supabaseClient.removeChannel(adminChannel);
+        adminChannel=supabaseClient.channel("support-owner-inbox")
+          .on("postgres_changes",{event:"*",schema:"public",table:"support_messages"},async p=>{await loadTickets();if(adminConversationId&&p.new?.conversation_id===adminConversationId)await loadAdminMessages();})
+          .on("postgres_changes",{event:"*",schema:"public",table:"support_conversations"},loadTickets).subscribe();
+      }else if(adminChannel){supabaseClient.removeChannel(adminChannel);adminChannel=null;}
     }
-    if (!supportMessages) return;
-
-    const bubble = document.createElement("div");
-    bubble.className = "support-message support-user";
-    const label = document.createElement("span");
-    label.textContent = "Kamu · " + topic;
-    const body = document.createElement("p");
-    body.textContent = message;
-    const time = document.createElement("time");
-    time.textContent = "Ditampilkan di pratinjau";
-    bubble.append(label, body, time);
-    supportMessages.appendChild(bubble);
-
-    const note = document.createElement("div");
-    note.className = "support-message support-reply";
-    const noteLabel = document.createElement("span");
-    noteLabel.textContent = "Informasi sistem";
-    const noteBody = document.createElement("p");
-    noteBody.textContent = "Pesanmu terlihat pada pratinjau ini saja dan belum terkirim ke petugas. Integrasi backend live chat perlu diaktifkan agar tim dukungan dapat menerima dan membalas pesan.";
-    const noteTime = document.createElement("time");
-    noteTime.textContent = "Belum terkirim";
-    note.append(noteLabel, noteBody, noteTime);
-    supportMessages.appendChild(note);
-
-    supportInput.value = "";
-    if (supportCharCount) supportCharCount.textContent = "0";
-    if (supportFormNote) supportFormNote.textContent = "Pesan hanya tampil di halaman ini; belum dikirim ke admin.";
-    supportMessages.scrollTop = supportMessages.scrollHeight;
+  }
+  supportInput?.addEventListener("input",()=>{if(supportCharCount)supportCharCount.textContent=String(supportInput.value.length);});
+  supportForm?.addEventListener("submit",async e=>{
+    e.preventDefault();if(sendingSupport)return;
+    const message=(supportInput?.value||"").trim();if(!message)return;
+    if(!supportSession?.user){if(supportFormNote)supportFormNote.textContent="Masuk dahulu untuk mengirim pesan.";openAuth("login");return;}
+    sendingSupport=true;const submit=supportForm.querySelector('button[type="submit"]');if(submit){submit.disabled=true;submit.textContent="Mengirim...";}
+    if(supportFormNote)supportFormNote.textContent="Menyimpan pesan dan meminta jawaban AI...";
+    try{
+      const {data,error}=await supabaseClient.functions.invoke("support-chat",{body:{conversation_id:conversationId,topic:supportTopic?.value||"Pertanyaan umum",message}});
+      if(error)throw error;if(data?.error)throw new Error(data.error);
+      conversationId=data.conversation_id||conversationId;supportInput.value="";if(supportCharCount)supportCharCount.textContent="0";
+      await loadCustomerMessages();
+      if(!customerChannel&&conversationId)customerChannel=supabaseClient.channel("support-customer-"+conversationId).on("postgres_changes",{event:"INSERT",schema:"public",table:"support_messages",filter:"conversation_id=eq."+conversationId},loadCustomerMessages).subscribe();
+      if(supportFormNote)supportFormNote.textContent=data.ai_replied?"Pesan tersimpan dan AI sudah membalas.":"Pesan tersimpan; AI belum membalas. Pemilik dapat menindaklanjuti.";
+    }catch(err){if(supportFormNote)supportFormNote.textContent=err?.message||"Pesan gagal dikirim. Coba lagi.";}
+    finally{sendingSupport=false;if(submit){submit.disabled=false;submit.innerHTML='Kirim pesan <span>↗</span>';}}
   });
+  adminReplyForm?.addEventListener("submit",async e=>{
+    e.preventDefault();const body=(adminReplyInput?.value||"").trim();
+    if(!body||!adminConversationId||supportSession?.user?.app_metadata?.support_admin!==true){if(adminNote)adminNote.textContent="Pilih tiket dan pastikan akunmu memiliki akses pemilik.";return;}
+    const submit=document.querySelector("#support-admin-reply-submit");if(submit)submit.disabled=true;
+    const {error}=await supabaseClient.from("support_messages").insert({conversation_id:adminConversationId,sender_id:supportSession.user.id,sender_type:"admin",body});
+    if(submit)submit.disabled=false;
+    if(error){if(adminNote)adminNote.textContent="Balasan gagal dikirim. Periksa klaim admin dan RLS.";return;}
+    await supabaseClient.from("support_conversations").update({updated_at:new Date().toISOString(),status:"waiting"}).eq("id",adminConversationId);
+    adminReplyInput.value="";if(adminNote)adminNote.textContent="Balasan terkirim.";await loadAdminMessages();await loadTickets();
+  });
+  document.querySelector("#support-admin-refresh")?.addEventListener("click",loadTickets);
+  if(supabaseClient){
+    supabaseClient.auth.getSession().then(({data})=>initializeSupport(data?.session||null));
+    supabaseClient.auth.onAuthStateChange((_event,session)=>window.setTimeout(()=>initializeSupport(session||null),0));
+  }
 
   const sectionIds = ["home", "slots", "casino", "poker", "lotto", "arcade", "fishing", "sports", "exclusive", "wallet", "deposit", "withdraw", "live-chat", "promotions", "leaderboard", "contact"];
   const navLinks = [...document.querySelectorAll(".side-nav a, .mobile-nav a")];
