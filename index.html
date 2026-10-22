@@ -161,7 +161,7 @@
   </div>
 
   <nav class="mobile-nav" aria-label="Navigasi mobile">
-    <a class="active" href="#home"><span>⌂</span>Home</a><a href="#slots"><span>✦</span>Slots</a><a href="#casino"><span>♠</span>Casino</a><a href="#promotions"><span>♧</span>Promo</a><button id="mobile-search" aria-label="Fokus pencarian"><span>⌕</span>Cari</button>
+    <a class="active" href="#home"><span>⌂</span>Home</a><a href="#slots"><span>✦</span>Slots</a><a href="#casino"><span>♠</span>Casino</a><a href="#promotions"><span>♧</span>Promo</a><button id="mobile-search" aria-label="Fokus pencarian"><span>⌕</span>Cari</button><button id="mobile-account" aria-label="Buka akun"><span>♙</span>Akun</button>
   </nav>
 
   <dialog class="auth-dialog" id="auth-dialog" aria-labelledby="auth-title">
@@ -181,6 +181,11 @@
       <p class="auth-message" id="auth-message" role="status" aria-live="polite"></p>
       <button class="btn btn-gold auth-submit" id="auth-submit" type="submit">Masuk</button>
     </form>
+    <div class="auth-session-panel" id="auth-session-panel" hidden>
+      <span class="section-kicker">SESI AKUN AKTIF</span>
+      <strong id="auth-session-email"></strong>
+      <button class="btn btn-outline" id="auth-dialog-logout" type="button">Keluar dari akun</button>
+    </div>
     <p class="auth-legal">Autentikasi memakai Supabase Auth. Gunakan hanya untuk akun demo; tidak ada saldo, transaksi, atau taruhan nyata.</p>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
