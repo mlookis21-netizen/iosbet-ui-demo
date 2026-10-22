@@ -152,6 +152,18 @@
     if (loginOpen) loginOpen.hidden = Boolean(email);
     if (signupOpen) signupOpen.hidden = Boolean(email);
     if (logoutButton) logoutButton.hidden = !email;
+    const sessionPanel = document.querySelector("#auth-session-panel");
+    const sessionEmail = document.querySelector("#auth-session-email");
+    if (sessionPanel) sessionPanel.hidden = !email;
+    if (sessionEmail) sessionEmail.textContent = email;
+    if (authForm) authForm.hidden = Boolean(email);
+    const authIntro = document.querySelector("#auth-intro");
+    if (authIntro && email) authIntro.textContent = "Kamu sudah masuk menggunakan akun ini.";
+    else if (authIntro) authIntro.textContent = authMode === "signup"
+      ? "Daftar dengan email yang bisa kamu akses."
+      : "Gunakan email dan kata sandi untuk melanjutkan.";
+    const mobileAccount = document.querySelector("#mobile-account");
+    if (mobileAccount) mobileAccount.innerHTML = email ? "<span>♙</span>Akun" : "<span>♙</span>Masuk";
   }
 
   if (window.supabase?.createClient) {
@@ -223,16 +235,37 @@
     }
   });
 
-  logoutButton?.addEventListener("click", async () => {
+  async function signOutCurrentUser() {
     if (!supabaseClient) return;
-    logoutButton.disabled = true;
+    if (logoutButton) logoutButton.disabled = true;
+    const dialogLogout = document.querySelector("#auth-dialog-logout");
+    if (dialogLogout) dialogLogout.disabled = true;
     const { error } = await supabaseClient.auth.signOut();
-    logoutButton.disabled = false;
+    if (logoutButton) logoutButton.disabled = false;
+    if (dialogLogout) dialogLogout.disabled = false;
     if (error) {
       notify("Gagal keluar. Coba lagi.");
       return;
     }
+    authDialog?.close();
     notify("Kamu sudah keluar dari akun.");
+  }
+
+  logoutButton?.addEventListener("click", signOutCurrentUser);
+  document.querySelector("#auth-dialog-logout")?.addEventListener("click", signOutCurrentUser);
+  document.querySelector("#mobile-account")?.addEventListener("click", () => {
+    if (!supabaseClient) {
+      notify("Layanan akun belum tersedia. Coba muat ulang halaman.");
+      return;
+    }
+    supabaseClient.auth.getSession().then(({ data }) => {
+      if (data?.session) {
+        setAuthMode("login");
+        if (authDialog && !authDialog.open) authDialog.showModal();
+      } else {
+        openAuth("login");
+      }
+    });
   });
 
   const sectionIds = ["home", "slots", "casino", "poker", "lotto", "arcade", "fishing", "sports", "exclusive", "promotions", "leaderboard", "contact"];
