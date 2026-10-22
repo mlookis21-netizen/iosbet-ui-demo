@@ -110,60 +110,60 @@ Deno.serve(async (req: Request) => {
     .limit(16);
   if (historyError) return json({ conversation_id: conversationId, saved: true, ai_replied: false, warning: "Pesan tersimpan, tetapi riwayat percakapan tidak dapat dibaca." });
 
-  const openAiKey = Deno.env.get("OPENAI_API_KEY");
-  if (!openAiKey) {
-    const fallback = "Pesanmu sudah tersimpan. Balasan AI belum aktif karena pemilik situs belum mengatur OPENAI_API_KEY di Supabase Edge Function Secrets.";
-    await admin.from("support_messages").insert({
-      conversation_id: conversationId,
-      sender_type: "system",
-      body: fallback,
-    });
-    return json({ conversation_id: conversationId, saved: true, ai_replied: false, setup_required: true });
+  // Deterministic FAQ: no external AI API and no paid model calls.
+  const normalized = message.toLocaleLowerCase("id-ID").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const has = (...terms: string[]) => terms.some((term) => normalized.includes(term));
+  let answer = "";
+  let faqCategory = "other";
+
+  if (has("halo", "hai", "hello", "selamat pagi", "selamat siang", "selamat malam", "permisi")) {
+    faqCategory = "greeting";
+    answer = "Halo! 👋 Aku asisten FAQ IOSBET. Aku bisa membantu pertanyaan umum tentang akun dan cara memakai situs. Ceritakan kendalanya secara singkat—jangan kirim kata sandi, OTP, PIN, atau informasi pembayaran.";
+  } else if (has("daftar", "registrasi", "buat akun", "register", "sign up")) {
+    faqCategory = "registration";
+    answer = "Untuk membuat akun, buka menu Masuk/Daftar lalu isi formulir dengan email yang benar dan kata sandi yang kuat. Jika diminta konfirmasi email, periksa Inbox dan folder Spam. Jangan bagikan kata sandi atau tautan konfirmasi kepada siapa pun. Jika tombol atau formulir gagal, kirim pesan errornya tanpa menyertakan data rahasia.";
+  } else if (has("login", "masuk", "gagal masuk", "tidak bisa masuk", "sign in")) {
+    faqCategory = "login";
+    answer = "Coba periksa kembali alamat email dan kata sandi, pastikan koneksi stabil, lalu muat ulang halaman. Jika baru mendaftar, periksa apakah email konfirmasi diperlukan. Jangan kirim kata sandi atau OTP di chat. Jika masih gagal, tuliskan pesan error yang tampil agar pemilik bisa memeriksanya.";
+  } else if (has("lupa password", "lupa kata sandi", "reset password", "ganti password", "ubah kata sandi")) {
+    faqCategory = "password";
+    answer = "Gunakan fitur pemulihan kata sandi jika tersedia pada halaman masuk. Jika pilihan itu belum muncul atau email pemulihan tidak datang, pemilik perlu memeriksa konfigurasi autentikasi. Jangan kirim kata sandi lama, OTP, atau tautan reset ke chat.";
+  } else if (has("email konfirmasi", "konfirmasi email", "verifikasi email", "email tidak masuk", "email belum masuk")) {
+    faqCategory = "email";
+    answer = "Periksa folder Spam/Junk, pastikan alamat email saat mendaftar benar, dan tunggu beberapa menit. Jangan meminta atau membagikan kode verifikasi kepada siapa pun. Jika tetap tidak ada, pemilik perlu memeriksa pengaturan email Supabase.";
+  } else if (has("deposit", "isi saldo", "top up", "topup", "penarikan", "withdraw", "tarik dana", "pembayaran", "transfer")) {
+    faqCategory = "payments";
+    answer = "Informasi penting: situs IOSBET yang tersedia saat ini masih berupa prototipe antarmuka. Sistem ini tidak memproses deposit, penarikan, transfer, saldo, atau pembayaran nyata. Jangan transfer uang atau mengirim detail rekening/kartu berdasarkan tampilan prototipe.";
+  } else if (has("saldo", "uang saya", "transaksi")) {
+    faqCategory = "balance";
+    answer = "Situs ini masih berupa prototipe UI dan belum memiliki sistem saldo atau transaksi nyata. Aku tidak bisa memeriksa atau mengubah saldo. Jangan kirim informasi keuangan; jika kamu melihat tampilan yang membingungkan, jelaskan bagian halamannya saja.";
+  } else if (has("game", "permainan", "katalog", "gambar tidak muncul", "gambar hilang")) {
+    faqCategory = "catalog";
+    answer = "Katalog di situs saat ini adalah tampilan antarmuka. Jika gambar atau halaman tidak muncul, coba muat ulang halaman dan periksa koneksi. Jika masih bermasalah, sebutkan nama item atau bagian yang bermasalah—tanpa mengirim data akun.";
+  } else if (has("error", "bug", "rusak", "tidak berfungsi", "gagal", "masalah", "kendala", "blank", "putih", "loading")) {
+    faqCategory = "troubleshooting";
+    answer = "Coba muat ulang halaman, periksa koneksi, lalu masuk kembali jika diperlukan. Kalau masalah tetap terjadi, kirim pesan error persisnya dan langkah sebelum error muncul. Jangan menyertakan kata sandi, OTP, PIN, atau informasi pembayaran. FAQ ini tidak dapat memeriksa keadaan akun secara langsung; pemilik bisa meninjau percakapan dari panel bantuan.";
+  } else if (has("admin", "pemilik", "orang asli", "manusia", "petugas", "operator", "bicara dengan")) {
+    faqCategory = "owner";
+    answer = "Pesanmu tersimpan dalam percakapan. Pemilik situs dapat membacanya melalui Panel Bantuan setelah masuk dengan akun yang memiliki akses pemilik. Aku tidak dapat menjanjikan waktu balasan atau mengirim notifikasi di luar situs.";
+  } else if (has("privasi", "data pribadi", "password", "kata sandi", "otp", "pin", "keamanan", "diretas", "hack")) {
+    faqCategory = "security";
+    answer = "Demi keamanan, jangan kirim kata sandi, OTP, PIN, kode pemulihan, atau data keuangan melalui chat. Jika menduga akun bermasalah, ubah kata sandi melalui jalur resmi yang tersedia dan beri tahu pemilik secara umum tanpa membagikan rahasia akun.";
+  } else {
+    faqCategory = "unmatched";
+    answer = "Aku belum menemukan jawaban yang cocok di FAQ IOSBET. Pesanmu sudah tersimpan; pemilik dapat membaca percakapan ini dan membalas dari Panel Bantuan. Sambil menunggu, jelaskan gejala atau pesan error yang tampil, tetapi jangan sertakan kata sandi, OTP, PIN, atau data pembayaran.";
   }
 
-  const model = Deno.env.get("OPENAI_MODEL") || "gpt-6-luna";
-  const messages = [
-    {
-      role: "system",
-      content: "Kamu adalah asisten bantuan IOSBET untuk sebuah prototipe katalog hiburan digital. Jawab dalam Bahasa Indonesia yang jelas, ramah, ringkas, dan langkah demi langkah. Jangan pernah meminta kata sandi, OTP, PIN, data kartu, atau data pembayaran. Jangan mengaku dapat melihat akun, mengubah data, memproses pembayaran, mengaktifkan permainan, atau menyelesaikan masalah di sistem jika tidak memiliki alat untuk melakukannya. Situs ini saat ini adalah prototipe UI; tidak ada taruhan, permainan, saldo, pembayaran, deposit, atau penarikan nyata yang diproses. Jika pengguna melaporkan masalah akun pribadi, masalah keamanan, atau hal yang membutuhkan pemeriksaan backend, jelaskan bahwa pesan akan ditinjau pemilik dan jangan mengarang jawaban. Jangan memberi saran untuk berjudi atau menjanjikan keuntungan. Jika tidak yakin, akui keterbatasan dan sarankan menunggu pemilik membalas."
-    },
-    ...(history || []).map((item) => ({
-      role: item.sender_type === "customer" ? "user" : "assistant",
-      content: item.body,
-    })),
-  ];
-
-  try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { "Authorization": `Bearer ${openAiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model,
-        messages,
-        max_completion_tokens: 500,
-        temperature: 0.3,
-      }),
-    });
-    if (!response.ok) {
-      const detail = await response.text();
-      console.error("OpenAI request failed", response.status, detail.slice(0, 500));
-      const fallback = "Pesanmu sudah tersimpan, tetapi AI sedang tidak tersedia. Pemilik situs dapat membalas melalui panel bantuan.";
-      await admin.from("support_messages").insert({ conversation_id: conversationId, sender_type: "system", body: fallback });
-      return json({ conversation_id: conversationId, saved: true, ai_replied: false, warning: "AI sedang tidak tersedia." });
-    }
-    const result = await response.json();
-    const answer = result?.choices?.[0]?.message?.content?.trim();
-    if (!answer) throw new Error("OpenAI returned an empty answer");
-    const { error: replyError } = await admin.from("support_messages").insert({
-      conversation_id: conversationId,
-      sender_type: "ai",
-      body: answer.slice(0, 4000),
-    });
-    if (replyError) return json({ conversation_id: conversationId, saved: true, ai_replied: false, warning: "Balasan AI tidak dapat disimpan." });
-    await admin.from("support_conversations").update({ updated_at: new Date().toISOString() }).eq("id", conversationId);
-    return json({ conversation_id: conversationId, saved: true, ai_replied: true });
-  } catch (error) {
-    console.error("AI support error", error instanceof Error ? error.message : "unknown error");
-    return json({ conversation_id: conversationId, saved: true, ai_replied: false, warning: "Pesan tersimpan, tetapi balasan AI gagal. Pemilik dapat membalas manual." });
+  const { error: faqReplyError } = await admin.from("support_messages").insert({
+    conversation_id: conversationId,
+    sender_type: "ai",
+    body: answer,
+  });
+  if (faqReplyError) {
+    console.error("FAQ reply could not be saved", faqReplyError.message);
+    return json({ conversation_id: conversationId, saved: true, ai_replied: false, warning: "Pesan tersimpan, tetapi jawaban FAQ gagal disimpan." });
   }
+  await admin.from("support_conversations").update({ updated_at: new Date().toISOString() }).eq("id", conversationId);
+  return json({ conversation_id: conversationId, saved: true, ai_replied: true, faq: true, faq_category: faqCategory });
+
 });
