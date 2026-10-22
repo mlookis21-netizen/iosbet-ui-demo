@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d16">
+  <meta name="description" content="Demo antarmuka katalog hiburan digital dengan navigasi, pencarian, dan kartu promosi.">
+  <title>IOSBET — UI Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <div class="demo-ribbon">DEMO UI · TANPA TRANSAKSI ATAU TARUHAN NYATA</div>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="IOSBET Demo beranda">
+      <span class="brand-mark">i</span><span>IOS<span class="brand-gold">BET</span><small>ENTERTAINMENT HUB</small></span>
+    </a>
+    <div class="search-wrap">
+      <span aria-hidden="true">⌕</span>
+      <input id="game-search" type="search" placeholder="Cari game atau kategori..." autocomplete="off" aria-label="Cari katalog">
+      <kbd>/</kbd>
+    </div>
+    <div class="top-actions">
+      <button class="btn btn-ghost" data-notice="Fitur akun hanya contoh tampilan dalam demo ini.">Masuk</button>
+      <button class="btn btn-gold" data-notice="Pendaftaran dinonaktifkan pada prototipe ini.">Daftar</button>
+      <button class="icon-btn" id="menu-toggle" aria-label="Buka menu" aria-expanded="false">☰</button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="side-label">MENU UTAMA</div>
+      <nav class="side-nav" aria-label="Navigasi utama">
+        <a class="nav-link active" href="#home"><span>⌂</span> Beranda</a>
+        <a class="nav-link" href="#slots"><span>✦</span> Slots <em>HOT</em></a>
+        <a class="nav-link" href="#casino"><span>♠</span> Casino</a>
+        <a class="nav-link" href="#poker"><span>♣</span> Poker</a>
+        <a class="nav-link" href="#lotto"><span>◎</span> Lotto</a>
+        <a class="nav-link" href="#arcade"><span>▦</span> Arcade</a>
+        <a class="nav-link" href="#fishing"><span>〰</span> Fishing</a>
+        <a class="nav-link" href="#sports"><span>⚽</span> Sports+</a>
+      </nav>
+      <div class="side-label side-label-spaced">JELAJAHI</div>
+      <nav class="side-nav" aria-label="Navigasi lainnya">
+        <a class="nav-link" href="#exclusive"><span>✧</span> Eksklusif</a>
+        <a class="nav-link" href="#promotions"><span>♧</span> Promosi <i class="dot"></i></a>
+        <a class="nav-link" href="#leaderboard"><span>☷</span> Leaderboard</a>
+        <a class="nav-link" href="#contact"><span>✉</span> Kontak</a>
+      </nav>
+      <div class="sidebar-note">
+        <span class="note-icon">✦</span>
+        <strong>Mode demo</strong>
+        <p>Jelajahi desain dan interaksi antarmuka. Semua tombol transaksi dinonaktifkan.</p>
+      </div>
+      <div class="side-foot">© 2026 IOSBET UI DEMO</div>
+    </aside>
+
+    <main id="home" class="main-content">
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow"><span class="pulse"></span> YOUR ENTERTAINMENT DESTINATION</span>
+          <h1>Temukan hiburan.<br><span>Jelajahi pengalaman baru.</span></h1>
+          <p>Jelajahi katalog game dan koleksi hiburan dalam satu tampilan yang praktis.</p>
+          <div class="hero-actions">
+            <a class="btn btn-gold btn-large" href="#slots">Jelajahi katalog <span>↗</span></a>
+            <a class="btn btn-outline btn-large" href="#promotions">Lihat promosi</a>
+          </div>
+          <div class="hero-stats">
+            <div><strong>08</strong><span>Kategori</span></div>
+            <div class="stat-divider"></div>
+            <div><strong>24+</strong><span>Kartu demo</span></div>
+            <div class="stat-divider"></div>
+            <div><strong>24/7</strong><span>Eksplorasi UI</span></div>
+          </div>
+        </div>
+        <div class="hero-art" aria-label="Ilustrasi abstrak kartu dan koin">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="hero-glow"></div>
+          <div class="floating-card card-back">✦</div>
+          <div class="floating-card card-front"><span>IOS</span><strong>♠</strong><small>COLLECTION</small></div>
+          <div class="coin coin-one">✦</div><div class="coin coin-two">I</div><div class="coin coin-three">✧</div>
+          <div class="art-caption"><span class="live-dot"></span> CURATED FOR YOU</div>
+        </div>
+      </section>
+
+      <section class="category-strip" aria-label="Kategori">
+        <a class="category-tile" href="#slots"><span class="category-icon purple">✦</span><span><strong>Slots</strong><small>Game pilihan</small></span><b>↗</b></a>
+        <a class="category-tile" href="#casino"><span class="category-icon red">♠</span><span><strong>Casino</strong><small>Meja live demo</small></span><b>↗</b></a>
+        <a class="category-tile" href="#poker"><span class="category-icon blue">♣</span><span><strong>Poker</strong><small>Koleksi kartu</small></span><b>↗</b></a>
+        <a class="category-tile" href="#arcade"><span class="category-icon green">▦</span><span><strong>Arcade</strong><small>Game kasual</small></span><b>↗</b></a>
+        <a class="category-tile" href="#sports"><span class="category-icon orange">⚽</span><span><strong>Sports+</strong><small>Zona olahraga</small></span><b>↗</b></a>
+      </section>
+
+      <section class="content-section" id="slots">
+        <div class="section-heading">
+          <div><span class="section-kicker">PILIHAN EDITOR</span><h2>Trending sekarang <span class="heading-spark">✦</span></h2><p>Koleksi kartu game untuk pratinjau antarmuka.</p></div>
+          <a class="text-link" href="#catalog">Lihat semua <span>→</span></a>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter katalog">
+          <button class="filter-chip active" data-filter="all">Semua</button>
+          <button class="filter-chip" data-filter="hot">Hot</button>
+          <button class="filter-chip" data-filter="exclusive">Eksklusif</button>
+          <button class="filter-chip" data-filter="new">Terbaru</button>
+          <button class="filter-chip" data-filter="table">Table</button>
+        </div>
+        <div class="game-grid" id="game-grid">
+          <article class="game-card" data-name="Arowana's Luck" data-category="hot"><div class="game-art art-a"><span class="game-tag">HOT</span><span class="art-symbol">龍</span><span class="art-word">AROWANA'S<br><b>LUCK</b></span></div><div class="game-meta"><div><strong>Arowana's Luck</strong><small>PG Soft · Slots</small></div><button class="play-btn" aria-label="Lihat detail Arowana's Luck" data-game="Arowana's Luck">↗</button></div></article>
+          <article class="game-card" data-name="Lucky Twins Wilds" data-category="new"><div class="game-art art-b"><span class="game-tag tag-new">BARU</span><span class="art-symbol">双</span><span class="art-word">LUCKY<br><b>TWINS WILDS</b></span></div><div class="game-meta"><div><strong>Lucky Twins Wilds</strong><small>PragmaticPlay · Slots</small></div><button class="play-btn" aria-label="Lihat detail Lucky Twins Wilds" data-game="Lucky Twins Wilds">↗</button></div></article>
+          <article class="game-card" data-name="Koi Gate" data-category="exclusive"><div class="game-art art-c"><span class="game-tag tag-exclusive">PILIHAN</span><span class="art-symbol">鯉</span><span class="art-word">KOI<br><b>GATE</b></span></div><div class="game-meta"><div><strong>Koi Gate</strong><small>Habanero · Slots</small></div><button class="play-btn" aria-label="Lihat detail Koi Gate" data-game="Koi Gate">↗</button></div></article>
+          <article class="game-card" data-name="Mini Mafia Megaways" data-category="hot"><div class="game-art art-d"><span class="game-tag">HOT</span><span class="art-symbol">♛</span><span class="art-word">MINI MAFIA<br><b>MEGAWAYS</b></span></div><div class="game-meta"><div><strong>Mini Mafia Megaways</strong><small>Nolimit City · Slots</small></div><button class="play-btn" aria-label="Lihat detail Mini Mafia Megaways" data-game="Mini Mafia Megaways">↗</button></div></article>
+          <article class="game-card" data-name="Fiesta 1000" data-category="new"><div class="game-art art-e"><span class="game-tag tag-new">BARU</span><span class="art-symbol">✹</span><span class="art-word">FIESTA<br><b>1000</b></span></div><div class="game-meta"><div><strong>Fiesta 1000</strong><small>Microgaming · Slots</small></div><button class="play-btn" aria-label="Lihat detail Fiesta 1000" data-game="Fiesta 1000">↗</button></div></article>
+          <article class="game-card" data-name="Mahjong Origin" data-category="table"><div class="game-art art-f"><span class="game-tag tag-table">TABLE</span><span class="art-symbol">麻</span><span class="art-word">MAHJONG<br><b>ORIGIN</b></span></div><div class="game-meta"><div><strong>Mahjong Origin</strong><small>JILI · Table</small></div><button class="play-btn" aria-label="Lihat detail Mahjong Origin" data-game="Mahjong Origin">↗</button></div></article>
+        </div>
+        <p class="empty-state" id="empty-state" hidden>Tidak ada kartu yang cocok. Coba kata kunci atau filter lain.</p>
+      </section>
+
+      <section class="feature-banner" id="exclusive">
+        <div class="feature-copy"><span class="section-kicker">ZONA PILIHAN</span><h2>Temukan koleksi<br><span>eksklusif.</span></h2><p>Area visual khusus untuk menonjolkan koleksi pilihan, kampanye, atau konten unggulan.</p><a href="#catalog" class="btn btn-outline">Jelajahi koleksi <span>→</span></a></div>
+        <div class="feature-visual"><div class="feature-ring"></div><div class="feature-diamond">✧</div><div class="feature-label">THE<br><b>SELECT</b><br>EDITION</div></div>
+      </section>
+
+      <section class="content-section" id="casino">
+        <div class="section-heading"><div><span class="section-kicker">RUANG LIVE DEMO</span><h2>Casino lounge</h2><p>Kartu contoh untuk kategori meja dan ruang live.</p></div><a class="text-link" href="#catalog">Jelajahi <span>→</span></a></div>
+        <div class="lounge-grid">
+          <article class="lounge-card lounge-red"><div class="lounge-icon">♠</div><span>TABLE COLLECTION</span><h3>Mega Baccarat</h3><p>Pratinjau kartu meja</p><button data-notice="Meja live tidak terhubung. Ini hanya kartu demo." class="round-arrow" aria-label="Detail Mega Baccarat">↗</button></article>
+          <article class="lounge-card lounge-blue"><div class="lounge-icon">♜</div><span>TABLE COLLECTION</span><h3>VIP Roulette</h3><p>Pratinjau kartu meja</p><button data-notice="Meja live tidak terhubung. Ini hanya kartu demo." class="round-arrow" aria-label="Detail VIP Roulette">↗</button></article>
+          <article class="lounge-card lounge-green"><div class="lounge-icon">♣</div><span>TABLE COLLECTION</span><h3>Bet Behind Blackjack</h3><p>Pratinjau kartu meja</p><button data-notice="Meja live tidak terhubung. Ini hanya kartu demo." class="round-arrow" aria-label="Detail Bet Behind Blackjack">↗</button></article>
+        </div>
+      </section>
+
+      <section class="content-section" id="catalog">
+        <div class="section-heading"><div><span class="section-kicker">LEBIH BANYAK UNTUK DILIHAT</span><h2>Jelajahi kategori</h2><p>Pilih kategori untuk melompat ke bagian terkait.</p></div></div>
+        <div class="explore-grid">
+          <a href="#poker"><span>♣</span><strong>Poker</strong><small>Card collection</small><b>↗</b></a>
+          <a href="#lotto"><span>◎</span><strong>Lotto</strong><small>Number games</small><b>↗</b></a>
+          <a href="#arcade"><span>▦</span><strong>Arcade</strong><small>Casual collection</small><b>↗</b></a>
+          <a href="#fishing"><span>〰</span><strong>Fishing</strong><small>Adventure collection</small><b>↗</b></a>
+          <a href="#sports"><span>⚽</span><strong>Sports+</strong><small>Sports hub</small><b>↗</b></a>
+          <a href="#leaderboard"><span>☷</span><strong>Leaderboard</strong><small>Demo showcase</small><b>↗</b></a>
+        </div>
+      </section>
+
+      <section class="content-section" id="promotions">
+        <div class="section-heading"><div><span class="section-kicker">KABAR & KAMPANYE</span><h2>Promosi pilihan</h2><p>Contoh layout banner kampanye — tanpa hadiah atau transaksi nyata.</p></div><a class="text-link" href="#contact">Info lainnya <span>→</span></a></div>
+        <div class="promo-grid">
+          <article class="promo-card promo-one"><div class="promo-orb">✦</div><span>FEATURED CAMPAIGN</span><h3>Stream ’n Spin<br>Cashdrop</h3><p>Banner kampanye · UI demo</p><button data-notice="Detail kampanye ini hanya contoh desain." class="promo-link">Lihat detail ↗</button></article>
+          <article class="promo-card promo-two"><div class="promo-orb">♛</div><span>WEEKLY SHOWCASE</span><h3>Golden Crown<br>Showdown</h3><p>Banner kampanye · UI demo</p><button data-notice="Detail kampanye ini hanya contoh desain." class="promo-link">Lihat detail ↗</button></article>
+          <article class="promo-card promo-three"><div class="promo-orb">✧</div><span>COMMUNITY FEATURE</span><h3>Level Up<br>Game Rewards</h3><p>Banner kampanye · UI demo</p><button data-notice="Detail kampanye ini hanya contoh desain." class="promo-link">Lihat detail ↗</button></article>
+        </div>
+      </section>
+
+      <section class="bottom-cta" id="contact"><div><span class="section-kicker">ADA PERTANYAAN?</span><h2>Jelajahi desainnya.</h2><p>Prototipe front-end statis untuk evaluasi UI/UX.</p></div><a class="btn btn-gold" href="mailto:demo@example.com?subject=IOSBET%20UI%20Demo">Kontak demo ↗</a></section>
+      <footer class="footer"><a class="brand footer-brand" href="#home"><span class="brand-mark">i</span><span>IOS<span class="brand-gold">BET</span><small>ENTERTAINMENT HUB</small></span></a><p>Prototipe UI statis untuk pembelajaran desain. Tidak menyediakan taruhan, pembayaran, atau layanan permainan nyata.</p><span>© 2026 IOSBET UI DEMO</span></footer>
+    </main>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Navigasi mobile">
+    <a class="active" href="#home"><span>⌂</span>Home</a><a href="#slots"><span>✦</span>Slots</a><a href="#casino"><span>♠</span>Casino</a><a href="#promotions"><span>♧</span>Promo</a><button id="mobile-search" aria-label="Fokus pencarian"><span>⌕</span>Cari</button>
+  </nav>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog class="detail-dialog" id="detail-dialog"><button class="dialog-close" id="dialog-close" aria-label="Tutup">×</button><span class="section-kicker">KARTU KATALOG DEMO</span><h2 id="dialog-title">Detail katalog</h2><p>Ini hanya pratinjau antarmuka. Tidak ada permainan, taruhan, akun, atau transaksi nyata yang terhubung.</p><button class="btn btn-gold" id="dialog-ok">Mengerti</button></dialog>
+</body>
+</html>
